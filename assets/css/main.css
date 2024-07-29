@@ -7,3 +7,10 @@
     background-color: black;
   }
 }
+
+.title {
+  font-size: 50vh;
+  line-height: 50vh;
+  color: #638751;
+  text-shadow: #638751 0px 20px 30px;
+}

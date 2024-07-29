@@ -51,6 +51,18 @@ let photosWidth = 0;
 let numberOfSquares = ref(20);
 let autoScroll = ref<gsap.core.Tween>();
 
+function setReady() {
+  setTimeout(() => {
+    gsap.to(".loader", {
+      opacity: 0,
+      duration: 1,
+      onComplete: () => {
+        gsap.set(".loader", { display: "none" });
+      },
+    });
+  }, 500);
+}
+
 function setupAnimation() {
   ScrollTrigger.killAll();
   let sections = gsap.utils.toArray<Element>(".photo");
@@ -73,13 +85,44 @@ function setupAnimation() {
     },
   });
 
-  setupAutoScroll();
+  let observer = ScrollTrigger.normalizeScroll(true);
+  let scrollTween: gsap.core.Tween | null = null;
+
+  function goToSection(back = false) {
+    scrollTween = gsap.to(window, {
+      scrollTo: { y: back ? 0 : innerHeight, autoKill: false },
+      onStart: () => {
+        //observer.disable(); // for touch devices, as soon as we start forcing scroll it should stop any current touch-scrolling, so we just disable() and enable() the normalizeScroll observer
+        //observer.enable();
+      },
+      duration: 1,
+      onComplete: () => {
+        scrollTween = null;
+        if (!back) setupAutoScroll();
+      },
+      overwrite: true,
+    });
+  }
+  ScrollTrigger.create({
+    trigger: ".title-section",
+    start: "top bottom",
+    onToggle: (self) => {
+      self.isActive && !scrollTween && goToSection(true);
+    },
+  });
+
+  ScrollTrigger.create({
+    trigger: ".photos-container",
+    start: "top bottom",
+    onToggle: (self) => {
+      self.isActive && !scrollTween && goToSection();
+    },
+  });
 }
 
 function setupAutoScroll() {
   let moveDirection: string | number = "max";
   autoScroll.value?.kill();
-
   autoScroll.value = gsap.to(window, {
     duration: 50, // TODO Calculate duration based on the number of photos left in current scroll position and their width
     scrollTo: { y: moveDirection },
@@ -113,10 +156,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="h-screen w-screen bg-black negative">
+  <Loader class="loader" />
+  <TittleSection :set-ready />
+  <div class="h-screen w-screen negative">
     <div
       v-if="status === 'success'"
-      class="h-full overflow-x-hidden overflow-y-clip whitespace-nowrap"
+      class="h-full overflow-x-hidden overflow-y-clip whitespace-nowrap photos-container"
     >
       <div class="h-20 relative">
         <div class="absolute bottom-0 space-x-10 wrapper">

@@ -58,7 +58,7 @@ defineProps({
     </div>
     <div
       v-if="autoScrollActive"
-      :onclick="setupAutoScroll"
+      :onclick="() => setupAutoScroll?.()"
       class="text-xl font-teko group transition duration-300 cursor-pointer"
     >
       Resume auto scroll
