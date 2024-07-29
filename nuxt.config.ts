@@ -34,11 +34,17 @@ export default defineNuxtConfig({
   },
   security: {
     headers: {
-      crossOriginEmbedderPolicy: process.env.NODE_ENV === 'development' ? 'unsafe-none' : 'require-corp',
-      crossOriginResourcePolicy: process.env.NODE_ENV === 'development' ? 'cross-origin' : 'same-origin',
+      crossOriginEmbedderPolicy:
+        process.env.NODE_ENV === "development" ? "unsafe-none" : "require-corp",
+      crossOriginResourcePolicy:
+        process.env.NODE_ENV === "development" ? "cross-origin" : "same-origin",
       contentSecurityPolicy: {
-        'img-src': ["'self'", 'data:', "https://strapi-production-e78b.up.railway.app/uploads/"],
-      }
+        "img-src": [
+          "'self'",
+          "data:",
+          "https://strapi-production-e78b.up.railway.app/uploads/",
+        ],
+      },
     },
   },
 });

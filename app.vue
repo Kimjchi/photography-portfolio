@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {gsap} from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
-import { ref } from 'vue'
-
+import { gsap } from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { ref } from "vue";
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -42,26 +42,26 @@ interface PhotoResponse {
   data: Photo[];
 }
 
-const { data, status } = await useFetch<PhotoResponse>( 
-  '/api/photos',   
-);
+const { data, status } = await useFetch<PhotoResponse>("/api/photos");
 
-gsap.registerPlugin(ScrollTrigger);
-let imageLoaded = 0; 
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+let imageLoaded = 0;
 let photosWidth = 0;
-let numberOfSquares = ref(10)
+let numberOfSquares = ref(20);
+let autoScroll = ref<gsap.core.Tween>();
 
-function setupAnimation() { 
+function setupAnimation() {
   ScrollTrigger.killAll();
   let sections = gsap.utils.toArray<Element>(".photo");
-    let wrapper = gsap.utils.toArray<Element>(".wrapper");
+  let wrapper = gsap.utils.toArray<Element>(".wrapper");
 
-    photosWidth = sections.reduce((acc, section, i) => {
-      return acc + section.clientWidth + 16 ;
-    }, 0 ) ;
+  photosWidth = sections.reduce((acc, section, i) => {
+    return acc + section.clientWidth + 16;
+  }, 160);
 
-    gsap.to([...sections, ...wrapper], {
-    x: "-=" + ( photosWidth - window.innerWidth) ,
+  gsap.to([...sections, ...wrapper], {
+    x: "-=" + (photosWidth - window.innerWidth),
     ease: "none", // <-- IMPORTANT!
     scrollTrigger: {
       trigger: ".negative",
@@ -69,31 +69,48 @@ function setupAnimation() {
       pinSpacing: true,
       scrub: 0.5,
       //snap: directionalSnap(1 / (sections.length - 1)),
-      end: "+=" + photosWidth ,
-    }
+      end: "+=" + photosWidth,
+    },
   });
-  
+
+  setupAutoScroll();
 }
 
-function onImgLoad () {
-  imageLoaded++
+function setupAutoScroll() {
+  let moveDirection: string | number = "max";
+  autoScroll.value?.kill();
+
+  autoScroll.value = gsap.to(window, {
+    duration: 50, // TODO Calculate duration based on the number of photos left in current scroll position and their width
+    scrollTo: { y: moveDirection },
+    ease: "none",
+  });
+
+  ScrollTrigger.observe({
+    type: "wheel,scroll",
+    onWheel: (self) => {
+      autoScroll.value?.kill();
+      self.kill();
+    },
+  });
+}
+
+function onImgLoad() {
+  imageLoaded++;
   if (data.value?.data.length === imageLoaded) {
     setupAnimation();
   }
-  numberOfSquares.value = Math.floor((photosWidth / 24) / 2);
+  numberOfSquares.value = Math.floor(photosWidth / 24 / 2);
 }
 
 onMounted(() => {
   window.addEventListener("resize", setupAnimation);
-})
+});
 
 onUnmounted(() => {
   window.removeEventListener("resize", setupAnimation);
-})
-
-
+});
 </script>
-
 
 <template>
   <div class="h-screen w-screen bg-black negative">
@@ -104,34 +121,40 @@ onUnmounted(() => {
       <div class="h-20 relative">
         <div class="absolute bottom-0 space-x-10 wrapper">
           <div
-          v-for="index in numberOfSquares"
-          :key="'topSquare-' + index"
-          class="h-9 bg-white inline-block w-6"
+            v-for="index in numberOfSquares"
+            :key="'topSquare-' + index"
+            class="h-9 bg-white inline-block w-6 rounded-md"
           ></div>
         </div>
       </div>
-      <div
-        v-for="photo in data?.data"
-        :key="photo.id"
-        class="inline-block photo h-[calc(100%-10rem)] mx-2"
-      >
-        <NuxtImg
-          :src="
-            runtimeConfig.public.strapiUrl +
-            photo.attributes.photo.data.attributes.url
-          "
-          alt="photo"
-          class="h-full"
-          @load="onImgLoad"
-          loading="lazy"
+      <div class="h-[calc(100%-10rem)] pl-40">
+        <Sidebar
+          :auto-scroll-active="autoScroll?.isActive()"
+          :setup-auto-scroll
         />
+        <div
+          v-for="photo in data?.data"
+          :key="photo.id"
+          class="inline-block photo h-full mx-2"
+        >
+          <NuxtImg
+            :src="
+              runtimeConfig.public.strapiUrl +
+              photo.attributes.photo.data.attributes.url
+            "
+            alt="photo"
+            class="h-full rounded-sm"
+            @load="onImgLoad"
+            loading="lazy"
+          />
+        </div>
       </div>
       <div class="h-20 relative">
         <div class="absolute top-0 space-x-10 wrapper">
           <div
-          v-for="index in numberOfSquares"
-          :key="'topSquare-' + index"
-          class="h-9 bg-white inline-block w-6"
+            v-for="index in numberOfSquares"
+            :key="'topSquare-' + index"
+            class="h-9 bg-white inline-block w-6 rounded-md"
           ></div>
         </div>
       </div>
