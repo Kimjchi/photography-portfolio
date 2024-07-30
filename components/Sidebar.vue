@@ -8,6 +8,7 @@ import {
 defineProps({
   autoScrollActive: Boolean,
   setupAutoScroll: Function,
+  goToSection: Function,
 });
 </script>
 
@@ -15,7 +16,12 @@ defineProps({
   <div
     class="fixed py-10 pr-16 pl-10 bg-black h-[calc(100%-10rem)] text-white z-10 left-10 rounded-sm opacity-70 hover:opacity-100"
   >
-    <h2 class="font-teko text-4xl">My portfolio</h2>
+    <h2
+      class="font-teko text-4xl cursor-pointer"
+      :onclick="() => goToSection?.(0)"
+    >
+      My portfolio
+    </h2>
     <div class="flex flex-col text-xl mt-5">
       <NuxtLink to="#videos" class="font-teko group transition duration-300">
         Videos
@@ -23,8 +29,12 @@ defineProps({
           class="border-t-2 border-white mr-5 w-0 group-hover:w-10/12 group-hover:border-2 transition-all duration-500"
         ></div>
       </NuxtLink>
-      <NuxtLink to="#about" class="font-teko group transition duration-300">
-        About & Contact
+      <NuxtLink
+        to="/"
+        class="font-teko group transition duration-300"
+        :onclick="() => goToSection?.('max')"
+      >
+        About
         <div
           class="border-t-2 border-white mr-5 w-0 group-hover:w-10/12 group-hover:border-2 transition-all duration-500"
         ></div>

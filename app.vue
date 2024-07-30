@@ -48,8 +48,10 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 let imageLoaded = 0;
 let photosWidth = 0;
+let photoMaxHeight = Infinity;
 let numberOfSquares = ref(20);
 let autoScroll = ref<gsap.core.Tween>();
+let goToSection: (y?: number | "max") => void;
 
 function setReady() {
   setTimeout(() => {
@@ -68,11 +70,16 @@ function setupAnimation() {
   let sections = gsap.utils.toArray<Element>(".photo");
   let wrapper = gsap.utils.toArray<Element>(".wrapper");
 
-  photosWidth = sections.reduce((acc, section, i) => {
-    return acc + section.clientWidth + 16;
-  }, 160);
+  photosWidth = sections.reduce(
+    (acc, section) => {
+      return acc + section.clientWidth + 16;
+    },
+    160 - 8,
+  );
 
-  gsap.to([...sections, ...wrapper], {
+  photoMaxHeight = sections.map((section) => section.clientHeight).reduce((a, b) => Math.min(a, b), Infinity);
+
+  gsap.to([...sections, ...wrapper, ".end"], {
     x: "-=" + (photosWidth - window.innerWidth),
     ease: "none", // <-- IMPORTANT!
     scrollTrigger: {
@@ -88,9 +95,9 @@ function setupAnimation() {
   let observer = ScrollTrigger.normalizeScroll(true);
   let scrollTween: gsap.core.Tween | null = null;
 
-  function goToSection(back = false) {
+  goToSection = (y: number | "max" = window.innerHeight) => {
     scrollTween = gsap.to(window, {
-      scrollTo: { y: back ? 0 : innerHeight, autoKill: false },
+      scrollTo: { y, autoKill: false },
       onStart: () => {
         //observer.disable(); // for touch devices, as soon as we start forcing scroll it should stop any current touch-scrolling, so we just disable() and enable() the normalizeScroll observer
         //observer.enable();
@@ -98,16 +105,19 @@ function setupAnimation() {
       duration: 1,
       onComplete: () => {
         scrollTween = null;
-        if (!back) setupAutoScroll();
+        if (y != 0 && !autoScroll.value) {
+          setupAutoScroll();
+        }
       },
       overwrite: true,
     });
-  }
+  };
+
   ScrollTrigger.create({
     trigger: ".title-section",
     start: "top bottom",
     onToggle: (self) => {
-      self.isActive && !scrollTween && goToSection(true);
+      self.isActive && !scrollTween && goToSection(0);
     },
   });
 
@@ -116,6 +126,14 @@ function setupAnimation() {
     start: "top bottom",
     onToggle: (self) => {
       self.isActive && !scrollTween && goToSection();
+    },
+  });
+
+  ScrollTrigger.create({
+    trigger: "#about",
+    start: "top bottom",
+    onToggle: (self) => {
+      self.isActive && !scrollTween && goToSection("max");
     },
   });
 }
@@ -140,10 +158,10 @@ function setupAutoScroll() {
 
 function onImgLoad() {
   imageLoaded++;
-  if (data.value?.data.length === imageLoaded) {
+  if (data.value?.data.length || 0 + 1 === imageLoaded) {
     setupAnimation();
   }
-  numberOfSquares.value = Math.floor(photosWidth / 24 / 2);
+  numberOfSquares.value = Math.floor(photosWidth / 64) // - 1;
 }
 
 onMounted(() => {
@@ -157,30 +175,35 @@ onUnmounted(() => {
 
 <template>
   <Loader class="loader" />
-  <TittleSection :set-ready />
+  <TitleSection :set-ready />
   <div class="h-screen w-screen negative">
     <div
       v-if="status === 'success'"
-      class="h-full overflow-x-hidden overflow-y-clip whitespace-nowrap photos-container"
+      class="h-screen w-screen overflow-x-hidden overflow-y-clip whitespace-nowrap photos-container flex flex-col"
     >
-      <div class="h-20 relative">
-        <div class="absolute bottom-0 space-x-10 wrapper">
+      <div class="flex-grow h-20 relative">
+        <div class="absolute bottom-0 space-x-10 wrapper h-full flex items-end">
           <div
             v-for="index in numberOfSquares"
             :key="'topSquare-' + index"
             class="h-9 bg-white inline-block w-6 rounded-md"
           ></div>
+          <!-- Don't forget to recalculate numberOfSquares <div
+            class="h-full bg-white inline-block w-40"
+            style="margin-left: 30px"
+          ></div> -->
         </div>
       </div>
-      <div class="h-[calc(100%-10rem)] pl-40">
+      <div class="max-h-[calc(100%-10rem)] w-full pl-40 relative">
         <Sidebar
           :auto-scroll-active="autoScroll?.isActive()"
           :setup-auto-scroll
+          :go-to-section="goToSection"
         />
         <div
           v-for="photo in data?.data"
           :key="photo.id"
-          class="inline-block photo h-full mx-2"
+          class="inline-block photo mx-2 max-h-full"          
         >
           <NuxtImg
             :src="
@@ -188,21 +211,40 @@ onUnmounted(() => {
               photo.attributes.photo.data.attributes.url
             "
             alt="photo"
-            class="h-full rounded-sm"
+            class="max-h-full rounded-sm w-auto"
             @load="onImgLoad"
+            loading="lazy"
+            :style="{height: photoMaxHeight + 'px'}"
+          />
+        </div>
+        <div class="inline-block photo ml-2 max-h-full">
+          <NuxtImg
+            :src="`${runtimeConfig.public.strapiUrl}/uploads/IMG_8138_bf429b1af1.JPG`"
+            alt="photo"
+            class="max-h-full rounded-sm w-auto"
+            @load="onImgLoad"
+            :style="{height: photoMaxHeight + 'px'}"
             loading="lazy"
           />
         </div>
+        <!-- <div class="inline-block bg-white w-10 end h-full relative -ml-3">
+          <div class="h-screen absolute w-full"></div>
+        </div> -->
       </div>
-      <div class="h-20 relative">
-        <div class="absolute top-0 space-x-10 wrapper">
+      <div class="flex-grow h-20 relative">
+        <div class="absolute top-0 space-x-10 wrapper h-full flex items-start">
           <div
             v-for="index in numberOfSquares"
             :key="'topSquare-' + index"
             class="h-9 bg-white inline-block w-6 rounded-md"
           ></div>
+          <!-- <div
+            class="h-full bg-white inline-block w-40"
+            style="margin-left: -5px"
+          ></div> -->
         </div>
       </div>
     </div>
   </div>
+  <About />
 </template>
