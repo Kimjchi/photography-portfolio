@@ -48,7 +48,9 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 let imageLoaded = 0;
 let photosWidth = 0;
+let photosHeight = 0;
 let photoMaxHeight = Infinity;
+let isSmallScreen = ref(false)
 let numberOfSquares = ref(20);
 let autoScroll = ref<gsap.core.Tween>();
 let goToSection: (y?: number | "max") => void;
@@ -69,15 +71,27 @@ function setupAnimation() {
   ScrollTrigger.killAll();
   let sections = gsap.utils.toArray<Element>(".photo");
   let wrapper = gsap.utils.toArray<Element>(".wrapper");
+  isSmallScreen.value = window.innerWidth < 640;
+  let padding = isSmallScreen.value ? 0 : 160;
 
   photosWidth = sections.reduce(
     (acc, section) => {
       return acc + section.clientWidth + 16;
     },
-    160 - 8,
+    padding - 8,
+  );
+
+  photosHeight = sections.reduce(
+    (acc, section) => {
+      return acc + section.clientHeight + 20;
+    },
+    padding,
   );
 
   photoMaxHeight = sections.map((section) => section.clientHeight).reduce((a, b) => Math.min(a, b), Infinity);
+  numberOfSquares.value = isSmallScreen.value ? Math.floor(photosHeight / 64) : Math.floor(photosWidth / 64) // - 1;
+
+  if (isSmallScreen.value) return;
 
   gsap.to([...sections, ...wrapper, ".end"], {
     x: "-=" + (photosWidth - window.innerWidth),
@@ -161,7 +175,6 @@ function onImgLoad() {
   if (data.value?.data.length || 0 + 1 === imageLoaded) {
     setupAnimation();
   }
-  numberOfSquares.value = Math.floor(photosWidth / 64) // - 1;
 }
 
 onMounted(() => {
@@ -176,17 +189,17 @@ onUnmounted(() => {
 <template>
   <Loader class="loader" />
   <TitleSection :set-ready />
-  <div class="h-screen w-screen negative">
+  <div class="sm:h-screen w-screen negative">
     <div
       v-if="status === 'success'"
-      class="h-screen w-screen overflow-x-hidden overflow-y-clip whitespace-nowrap photos-container flex flex-col"
+      class="sm:h-screen w-screen overflow-x-hidden overflow-y-clip whitespace-nowrap photos-container flex sm:flex-col"
     >
-      <div class="flex-grow h-20 relative">
-        <div class="absolute bottom-0 space-x-10 wrapper h-full flex items-end">
+      <div class="flex-grow sm:h-20 relative">
+        <div class="sm:absolute sm:bottom-0 sm:space-x-10 space-y-10 wrapper flex flex-col sm:flex-row items-end ml-5 sm:ml-0">
           <div
             v-for="index in numberOfSquares"
             :key="'topSquare-' + index"
-            class="h-9 bg-white inline-block w-6 rounded-md"
+            class="sm:h-9 h-6 bg-white sm:inline-block sm:w-6 w-9 rounded-md"
           ></div>
           <!-- Don't forget to recalculate numberOfSquares <div
             class="h-full bg-white inline-block w-40"
@@ -194,16 +207,17 @@ onUnmounted(() => {
           ></div> -->
         </div>
       </div>
-      <div class="max-h-[calc(100%-10rem)] w-full pl-40 relative">
+      <div class="sm:max-h-[calc(100%-10rem)] w-full sm:pl-40 relative">
         <Sidebar
           :auto-scroll-active="autoScroll?.isActive()"
           :setup-auto-scroll
           :go-to-section="goToSection"
+          :height="photoMaxHeight"
         />
         <div
           v-for="photo in data?.data"
           :key="photo.id"
-          class="inline-block photo mx-2 max-h-full"          
+          class="sm:inline-block photo sm:mx-2 sm:my-0 my-5 max-h-full"          
         >
           <NuxtImg
             :src="
@@ -214,16 +228,16 @@ onUnmounted(() => {
             class="max-h-full rounded-sm w-auto"
             @load="onImgLoad"
             loading="lazy"
-            :style="{height: photoMaxHeight + 'px'}"
+            :style="!isSmallScreen && {height: photoMaxHeight + 'px'}"
           />
         </div>
-        <div class="inline-block photo ml-2 max-h-full">
+        <div class="sm:inline-block photo max-h-full sm:ml-2 sm:mt-0 mt-5">
           <NuxtImg
             :src="`${runtimeConfig.public.strapiUrl}/uploads/IMG_8138_bf429b1af1.JPG`"
             alt="photo"
             class="max-h-full rounded-sm w-auto"
             @load="onImgLoad"
-            :style="{height: photoMaxHeight + 'px'}"
+            :style="!isSmallScreen && {height: photoMaxHeight + 'px'}"
             loading="lazy"
           />
         </div>
@@ -231,12 +245,12 @@ onUnmounted(() => {
           <div class="h-screen absolute w-full"></div>
         </div> -->
       </div>
-      <div class="flex-grow h-20 relative">
-        <div class="absolute top-0 space-x-10 wrapper h-full flex items-start">
+      <div class="flex-grow sm:h-20 relative">
+        <div class="sm:absolute sm:top-0 sm:space-x-10 sm:space-y-0 space-y-10 wrapper flex flex-col sm:flex-row items-start mr-5 sm:mr-0">
           <div
             v-for="index in numberOfSquares"
             :key="'topSquare-' + index"
-            class="h-9 bg-white inline-block w-6 rounded-md"
+            class="sm:h-9 h-6 bg-white sm:inline-block sm:w-6 w-9 rounded-md"
           ></div>
           <!-- <div
             class="h-full bg-white inline-block w-40"

@@ -25,8 +25,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="h-screen w-screen flex justify-center items-center" id="about">
-    <div class="text-white h-full flex flex-col w-1/2 py-28 px-16 space-y-5">
+  <div class="sm:h-screen flex flex-col">
+  <div class="md:h-[75%] w-screen flex sm:flex-row flex-col justify-center items-center flex-grow" id="about">
+    <div class="text-white flex flex-col sm:w-1/2 md:py-28 sm:py-5 py-10  px-16 space-y-5 h-full">
       <div>
         <h2 class="text-6xl font-teko">About me</h2>
         <div
@@ -89,12 +90,17 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div class="w-1/2 h-5/6 px-10">
+    <div class="sm:w-1/2 px-10 py-16 mb-2 sm:mb-0 overflow-hidden h-full">
       <NuxtImg
         :src="`${runtimeConfig.public.strapiUrl}/uploads/000081430030_3f6781e0c2.jpg`"
         alt="profile"
-        class="rounded-lg h-full"
+        class="rounded-lg object-cover h-full"
       />
+      <div class="text-white font-teko mt-1 ml-3">Ciao</div>
     </div>
   </div>
+  <div class="text-white font-teko text-center my-5 md:mb-3">
+    Copyright © 2024 All rights reserved.
+  </div>
+</div>
 </template>

@@ -9,12 +9,14 @@ defineProps({
   autoScrollActive: Boolean,
   setupAutoScroll: Function,
   goToSection: Function,
+  height: Number,
 });
 </script>
 
 <template>
   <div
-    class="fixed py-10 pr-16 pl-10 bg-black h-[calc(100%-10rem)] text-white z-10 left-10 rounded-sm opacity-70 hover:opacity-100"
+    class="hidden sm:block fixed py-10 pr-16 pl-10 bg-black text-white z-10 left-10 rounded-sm opacity-70 hover:opacity-100"
+    :style="{height: height + 'px'}"
   >
     <h2
       class="font-teko text-4xl cursor-pointer"
