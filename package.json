@@ -12,7 +12,6 @@
   "dependencies": {
     "@nuxt/image": "^1.7.0",
     "@nuxtjs/google-fonts": "^3.2.0",
-    "@phosphor-icons/vue": "^2.2.1",
     "gsap": "^3.12.5",
     "nuxt": "^3.12.4",
     "nuxt-security": "^2.0.0-rc.9",

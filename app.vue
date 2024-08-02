@@ -1,3 +1,8 @@
+<style>
+  @import "https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css";
+  @import "https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css";
+</style>
+
 <script setup lang="ts">
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";

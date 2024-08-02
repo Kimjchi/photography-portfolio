@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import {
-  PhInstagramLogo,
-  PhLinkedinLogo,
-  PhGithubLogo,
-} from "@phosphor-icons/vue";
 
 defineProps({
   autoScrollActive: Boolean,
@@ -44,28 +39,13 @@ defineProps({
     </div>
     <div class="flex space-x-4 my-5">
       <NuxtLink to="https://www.instagram.com/kimjchi/" target="_blank">
-        <PhInstagramLogo
-          :size="32"
-          color="#e6e6e6"
-          weight="fill"
-          class="cursor-pointer opacity-80 hover:opacity-100"
-        />
+        <i class="ph-fill ph-instagram-logo cursor-pointer opacity-80 hover:opacity-100 text-4xl" style="color: #e6e6e6;"></i>
       </NuxtLink>
       <NuxtLink to="www.linkedin.com/in/jérémy-v-kim" target="_blank">
-        <PhLinkedinLogo
-          :size="32"
-          color="#e6e6e6"
-          weight="fill"
-          class="cursor-pointer opacity-80 hover:opacity-100"
-        />
+        <i class="ph-fill ph-linkedin-logo cursor-pointer opacity-80 hover:opacity-100 text-4xl" style="color: #e6e6e6;"></i>
       </NuxtLink>
       <NuxtLink to="https://github.com/Kimjchi" target="_blank">
-        <PhGithubLogo
-          :size="32"
-          color="#e6e6e6"
-          weight="fill"
-          class="cursor-pointer opacity-80 hover:opacity-100"
-        />
+        <i class="ph-fill ph-github-logo cursor-pointer opacity-80 hover:opacity-100 text-4xl" style="color: #e6e6e6;"></i>
       </NuxtLink>
     </div>
     <div

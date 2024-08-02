@@ -2,14 +2,6 @@
 import { useRuntimeConfig } from "nuxt/app";
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import {
-  PhBinary,
-  PhPenNib,
-  PhPalette,
-  PhInstagramLogo,
-  PhLinkedinLogo,
-  PhGithubLogo,
-} from "@phosphor-icons/vue";
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -44,25 +36,13 @@ onMounted(() => {
         Thanks for reading this. Please reach out if you wanna talk!
         <div class="flex space-x-4 my-5 text-green-500">
           <NuxtLink to="https://www.instagram.com/kimjchi/" target="_blank">
-            <PhInstagramLogo
-              :size="50"
-              weight="fill"
-              class="cursor-pointer opacity-80 hover:opacity-100"
-            />
+            <i class="ph-fill ph-instagram-logo cursor-pointer opacity-80 hover:opacity-100 text-5xl"></i>
           </NuxtLink>
           <NuxtLink to="www.linkedin.com/in/jérémy-v-kim" target="_blank">
-            <PhLinkedinLogo
-              :size="50"
-              weight="fill"
-              class="cursor-pointer opacity-80 hover:opacity-100"
-            />
+            <i class="ph-fill ph-linkedin-logo cursor-pointer opacity-80 hover:opacity-100 text-5xl"></i>
           </NuxtLink>
           <NuxtLink to="https://github.com/Kimjchi" target="_blank">
-            <PhGithubLogo
-              :size="50"
-              weight="fill"
-              class="cursor-pointer opacity-80 hover:opacity-100"
-            />
+            <i class="ph-fill ph-github-logo cursor-pointer opacity-80 hover:opacity-100 text-5xl"></i>
           </NuxtLink>
         </div>
         Check out my other websites while you are at it:
@@ -71,20 +51,20 @@ onMounted(() => {
             href="https://portfolio.jeremykim.fr/"
             target="_blank"
             class="text-green-500 flex"
-            ><PhBinary :size="32" class="mr-2" /> Developer portfolio</NuxtLink
+            ><i class="ph ph-binary text-4xl mr-2"></i> Developer portfolio</NuxtLink
           >
           <NuxtLink
             href="https://www.obangsaek.fr/"
             target="_blank"
             class="text-green-500 flex"
-            ><PhPenNib :size="32" class="mr-2" /> A blog I made for a
+            ><i class="ph ph-pen-nib text-4xl mr-2"></i> A blog I made for a
             friend</NuxtLink
           >
           <NuxtLink
             href="http://gallery.jeremykim.fr/drawings"
             target="_blank"
             class="text-green-500 flex"
-            ><PhPalette :size="32" class="mr-2" /> A place where I put my
+            ><i class="ph ph-palette text-4xl mr-2"></i> A place where I put my
             drawings</NuxtLink
           >
         </div>
