@@ -34,9 +34,8 @@ export default defineNuxtConfig({
   },
   security: {
     headers: {
-      crossOriginEmbedderPolicy:
-        process.env.NODE_ENV === "development" ? "unsafe-none" : "require-corp",
-      crossOriginResourcePolicy: "cross-origin",
+      crossOriginEmbedderPolicy: "unsafe-none",
+      crossOriginResourcePolicy: false,
       contentSecurityPolicy: {
         "img-src": [
           "'self'",
@@ -45,8 +44,5 @@ export default defineNuxtConfig({
         ],
       },
     },
-  },
-  image: {
-    domains: ['strapi-production-e78b.up.railway.app']
   }
 });
