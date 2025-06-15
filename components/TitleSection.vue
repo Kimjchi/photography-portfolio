@@ -15,7 +15,7 @@ defineProps({
       Jérémy<br/>Kim
     </h1>
     <NuxtImg
-      :src="`${runtimeConfig.public.strapiUrl}/uploads/IMG_8235_74a38cece7.JPG`"
+      :src="`${runtimeConfig.public.strapiUrl}/uploads/IMG_8235_77851dd4b2.JPG`"
       alt="logo"
       class="h-full w-full absolute top-0 left-0 object-cover"
       @load="() => setReady?.()"

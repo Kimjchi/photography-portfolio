@@ -38,7 +38,7 @@ onMounted(() => {
           <NuxtLink to="https://www.instagram.com/kimjchi/" target="_blank">
             <i class="ph-fill ph-instagram-logo cursor-pointer opacity-80 hover:opacity-100 text-5xl"></i>
           </NuxtLink>
-          <NuxtLink to="www.linkedin.com/in/jérémy-v-kim" target="_blank">
+          <NuxtLink to="https://www.linkedin.com/in/jérémy-v-kim" target="_blank">
             <i class="ph-fill ph-linkedin-logo cursor-pointer opacity-80 hover:opacity-100 text-5xl"></i>
           </NuxtLink>
           <NuxtLink to="https://github.com/Kimjchi" target="_blank">
@@ -72,7 +72,7 @@ onMounted(() => {
     </div>
     <div class="sm:w-1/2 px-10 py-16 mb-2 sm:mb-0 overflow-hidden h-full">
       <NuxtImg
-        :src="`${runtimeConfig.public.strapiUrl}/uploads/000081430030_3f6781e0c2.jpg`"
+        :src="`${runtimeConfig.public.strapiUrl}/uploads/Photo_de_Google_06d13f87b2.jpg`"
         alt="profile"
         class="rounded-lg object-cover h-full"
       />

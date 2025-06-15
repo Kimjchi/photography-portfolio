@@ -238,7 +238,7 @@ onUnmounted(() => {
         </div>
         <div class="sm:inline-block photo max-h-full sm:ml-2 sm:mt-0 mt-5">
           <NuxtImg
-            :src="`${runtimeConfig.public.strapiUrl}/uploads/IMG_8138_bf429b1af1.JPG`"
+            :src="`${runtimeConfig.public.strapiUrl}/uploads/IMG_8138_ceb37139e0.JPG`"
             alt="photo"
             class="max-h-full rounded-sm w-auto"
             @load="onImgLoad"
